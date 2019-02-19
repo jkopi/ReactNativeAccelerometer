@@ -1,2 +1,2 @@
 # ReactNativeAccelerometer
-React Native Accelerometer
+School assignment
