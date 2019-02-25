@@ -3,7 +3,7 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerNgrokUrl": "https://yn-r73.anonymous.reactnativeaccelerometer.exp.direct",
+  "packagerNgrokUrl": "https://packager.yn-r73.anonymous.reactnativeaccelerometer.exp.direct",
+  "ngrokPid": 5984
 }

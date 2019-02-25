@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, AppRegistry } from 'react-native';
 import Measurer from './components/Measurer';
-import Options from './components/Options';
 
 import Swiper from 'react-native-swiper';
 
@@ -10,11 +9,8 @@ export default class App extends React.Component {
     return (
 
         <Swiper style={styles.wrapper}>
-          <View style={styles.slide1}>
+          <View style={styles.measureView}>
             <Measurer/>
-          </View>
-          <View>
-            <Options/>
           </View>
         </Swiper>
 
@@ -23,27 +19,10 @@ export default class App extends React.Component {
 }
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1
   },
-  slide1: {
+  measureView: {
     flex: 1,
-    backgroundColor: '#9DD6EB',
   },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#92BBD9',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: 'bold',
-  }
 });
 AppRegistry.registerComponent('accelerometerproject', () => Swiper);
