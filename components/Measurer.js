@@ -262,10 +262,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     padding: 10,
   },
-  sensor: {
-    marginTop: 15,
-    paddingHorizontal: 10,
-  },
   momentumText: {
     fontSize: 70,
     fontFamily: 'monospace',
