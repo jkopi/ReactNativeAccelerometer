@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Modal, Text, TouchableOpacity, View, TouchableHighlight, Button} from 'react-native';
+import { StyleSheet, Modal, Text, View, Button} from 'react-native';
 import { Accelerometer } from 'expo';
 
 
@@ -15,8 +15,6 @@ class Measurer extends React.Component {
       magnitude: [],
       avgAcc: [],
       stateOfUser: {},
-      walks: 0,
-      runs: 0,
       clrs: {
         clrWalk: '',
         clrRun: ''
@@ -56,28 +54,24 @@ class Measurer extends React.Component {
   _subscribe = () => {
     this._subscription = Accelerometer.addListener(accelerometerData => {
       let length = this.state.magnitude.length;
-      if (length === 3){
-
+      if (length === 3) {
         let i;
         let accResults = [];
         let magnitude = this.state.magnitude;
         for (i = 0; i < this.state.magnitude.length; i++){
 
-          {/*
-            setting X, Y, Z axis variables
-          */}
+          {/* setting X, Y, Z axis variables */}
           const x = magnitude[i].x;
           const y = magnitude[i].y;
           const z = magnitude[i].z;
-          let avgRes = Math.sqrt(( Math.pow(x, 2) ) + ( Math.pow(z, 2) ) + (Math.pow(y, 2)) );
+          {/* Calculating average acceleration */}
+          let avgRes = Math.sqrt(( Math.pow(x, 2) ) + ( Math.pow(z, 2) ) + (Math.pow(y, 2)));
 
-          {/*
-            combine results
-           */}
+          {/* combine results */}
           accResults = accResults.concat(avgRes);
         }
         let momentum = [];
-        let a; let b; let c;
+        let aX; let bY; let cZ;
 
         if( accResults.length === 3){
           for (i = 0; i < accResults.length; i++){
@@ -88,56 +82,46 @@ class Measurer extends React.Component {
 
           for (i = 0 ; i < momentum.length; i++){
             if (i === 0) {
-              a = momentum[i];
+              aX = momentum[i];
             }
             else if (i === 1) {
-              b = momentum[i];
+              bY = momentum[i];
             }
             else if (i === 2) {
-              c = momentum[i];
+              cZ = momentum[i];
             }
           }
 
-          const momentumUser = (a + b + c) / 3;
+          {/* Calculating users speed */}
+          const momentumUser = (aX + bY + cZ) / 3;
 
-          if (  momentumUser < 0.50 ){
-
+          if ( momentumUser < 0.47 ){
             this.setState({
-              stateOfUser: {runOrWalk:'Walking'}
+              stateOfUser: {runOrWalk: 'Walking'},
+              clrs: {clrWalk: '#c9feff'},
             });
 
+          } else if ( momentumUser > 0.47 ){
             this.setState({
-              clrs: {clrWalk: '#87ceeb'}
-            });
-
-          } else if (momentumUser > 0.50){
-
-            this.setState({
-              stateOfUser: {runOrWalk:'Running'},
-            });
-
-            this.setState({
+              stateOfUser: {runOrWalk: 'Running'},
               clrs: {clrRun: '#98fb98'},
-              runs: this.state.runs + 1
             });
           }
         }
 
-        {/*
-          saving data accelerometer data to state
-         */}
+        {/* saving data accelerometer data to state */}
         this.setState({
           magnitude: this.state.magnitude.slice(1),
           accelerometerData: accelerometerData,
-          avgAcc: accResults,
+          avgAcc: accResults
         });
 
-      } if (length < 3) {
+      } else if (length < 3) {
         this.setState({
           accelerometerData: accelerometerData,
           magnitude: this.state.magnitude.concat(
-              [accelerometerData])
-          ,
+              [accelerometerData]
+          )
         });
       }
     });
@@ -153,27 +137,21 @@ class Measurer extends React.Component {
     let { x, y, z } = this.state.accelerometerData;
 
     return (
-        <View style={{flex: 1, margin: 20, margin: 10, textAlign: 'center', fontSize: 20, paddingTop: 70,
+      <View style={{flex: 1, margin: 20, margin: 10, textAlign: 'center', fontSize: 20, paddingTop: 70,
           backgroundColor: this.state.clrs.clrRun || this.state.clrs.clrWalk}}>
         <View>
           <Modal
               style={styles.modal}
               animationType="slide"
-              transparent={false}
+              transparent={true}
               visible={this.state.modalVisible}
               onRequestClose={() => {
                 Alert.alert('Modal has been closed.');
               }}>
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.snsrBtn} onPress={this._toggle}>
-              <Text>Toggle Sensor</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.fstBtn} onPress={this._fast} >
-              <Text>Fast Mode</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.slwBtn} onPress={this._slow} >
-              <Text>Slow Mode</Text>
-            </TouchableOpacity>
+              <Button type="outline" title="Toggle Sensor" style={styles.snsrBtn} onPress={this._toggle}/>
+              <Button type="outline" title="Fast Mode" style={styles.fstBtn} onPress={this._fast} />
+              <Button type="outline" title="Slow Mode" style={styles.slwBtn} onPress={this._slow} />
             </View>
             <Button
                 title="Close Modal"
@@ -184,9 +162,7 @@ class Measurer extends React.Component {
           </Modal>
             <View style={styles.runContainer}>
             <Text style={styles.momentumText}>{runOrWalk}</Text>
-            <Text>You have ran: {this.state.runs} times</Text>
           </View>
-
           <View style={styles.sensorContainer}>
             <Text style={styles.sensorText}>x: {round(x)} y: {round(y)} z: {round(z)}</Text>
           </View>
@@ -196,7 +172,7 @@ class Measurer extends React.Component {
                   onPress={() => {this.setModalVisible(!this.state.modalVisible);}
                   }/>
         </View>
-        </View>
+      </View>
     );
   }
 }
@@ -239,10 +215,7 @@ const styles = StyleSheet.create({
   },
   sensorContainer: {
     alignItems:'center',
-    borderStyle: 'solid',
-    borderBottomColor: 'black',
-    borderWidth: 1,
-    flexDirection: 'column',
+    padding: 10
   },
   sensorText: {
     fontSize: 20
