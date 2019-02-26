@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Modal, Text, TouchableOpacity, View, TouchableHighlight, Button} from 'react-native';
 import { Accelerometer } from 'expo';
-import FontAwesome, { Icons, IconTypes } from 'react-native-fontawesome';
 
 
 class Measurer extends React.Component {
@@ -255,12 +254,6 @@ const styles = StyleSheet.create({
   },
   runContainer: {
     alignItems:'center'
-  },
-  toggleBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#eee',
-    padding: 10,
   },
   momentumText: {
     fontSize: 70,
