@@ -17,7 +17,8 @@ class Measurer extends React.Component {
       stateOfUser: {},
       clrs: {
         clrWalk: '',
-        clrRun: ''
+        clrRun: '',
+        clrFaster: ''
       }
     }
   }
@@ -56,29 +57,36 @@ class Measurer extends React.Component {
       let length = this.state.magnitude.length;
       if (length === 3) {
         let i;
+        let aX; let bY; let cZ;
         let accResults = [];
+        let momentum = [];
         let magnitude = this.state.magnitude;
         for (i = 0; i < this.state.magnitude.length; i++){
 
-          {/* setting X, Y, Z axis variables */}
+          {/*
+           setting X, Y, Z axis variables 
+          */}
           const x = magnitude[i].x;
           const y = magnitude[i].y;
           const z = magnitude[i].z;
-          {/* Calculating average acceleration */}
+          {/*
+             Calculating average acceleration 
+          */}
           let avgRes = Math.sqrt(( Math.pow(x, 2) ) + ( Math.pow(z, 2) ) + (Math.pow(y, 2)));
 
-          {/* combine results */}
+          {/*
+           combine results 
+          */}
           accResults = accResults.concat(avgRes);
         }
-        let momentum = [];
-        let aX; let bY; let cZ;
+
 
         if( accResults.length === 3){
           for (i = 0; i < accResults.length; i++){
 
-            momentum.push(Math.abs(accResults[i] * 0.50 - 0.50) * 3.6) ;
+              momentum.push(Math.abs(accResults[i] * 0.50 - 0.50) * 3.6) ;
 
-          }
+          }     
 
           for (i = 0 ; i < momentum.length; i++){
             if (i === 0) {
@@ -109,7 +117,9 @@ class Measurer extends React.Component {
           }
         }
 
-        {/* saving data accelerometer data to state */}
+        {/* 
+          saving data accelerometer data to state
+        */}
         this.setState({
           magnitude: this.state.magnitude.slice(1),
           accelerometerData: accelerometerData,
@@ -138,7 +148,7 @@ class Measurer extends React.Component {
 
     return (
       <View style={{flex: 1, margin: 20, margin: 10, textAlign: 'center', fontSize: 20, paddingTop: 70,
-          backgroundColor: this.state.clrs.clrRun || this.state.clrs.clrWalk}}>
+          backgroundColor: this.state.clrs.clrRun || this.state.clrs.clrWalk }}>
         <View>
           <Modal
               style={styles.modal}
