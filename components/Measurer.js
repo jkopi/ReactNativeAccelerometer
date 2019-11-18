@@ -1,11 +1,9 @@
-import React from 'react';
-import { StyleSheet, Modal, Text, View, Button} from 'react-native';
-import { Accelerometer } from 'expo';
-
+import React from "react";
+import { StyleSheet, Modal, Text, View, Button } from "react-native";
+import { Accelerometer } from "expo";
 
 class Measurer extends React.Component {
-
-  state ;
+  state;
 
   constructor(props) {
     super(props);
@@ -16,11 +14,11 @@ class Measurer extends React.Component {
       avgAcc: [],
       stateOfUser: {},
       clrs: {
-        clrWalk: '',
-        clrRun: '',
-        clrFaster: ''
+        clrWalk: "",
+        clrRun: "",
+        clrFaster: ""
       }
-    }
+    };
   }
   componentDidMount() {
     this._toggle();
@@ -34,13 +32,13 @@ class Measurer extends React.Component {
     this.setState({
       modalVisible: visible
     });
-  };
+  }
 
   _toggle = () => {
     if (this._subscription) {
-        this._unsubscribe();
+      this._unsubscribe();
     } else {
-        this._subscribe();
+      this._subscribe();
     }
   };
 
@@ -57,81 +55,85 @@ class Measurer extends React.Component {
       let length = this.state.magnitude.length;
       if (length === 3) {
         let i;
-        let aX; let bY; let cZ;
+        let aX;
+        let bY;
+        let cZ;
         let accResults = [];
         let momentum = [];
         let magnitude = this.state.magnitude;
-        for (i = 0; i < this.state.magnitude.length; i++){
-
-          {/*
+        for (i = 0; i < this.state.magnitude.length; i++) {
+          {
+            /*
            setting X, Y, Z axis variables 
-          */}
+          */
+          }
           const x = magnitude[i].x;
           const y = magnitude[i].y;
           const z = magnitude[i].z;
-          {/*
+          {
+            /*
              Calculating average acceleration 
-          */}
-          let avgRes = Math.sqrt(( Math.pow(x, 2) ) + ( Math.pow(z, 2) ) + (Math.pow(y, 2)));
+          */
+          }
+          let avgRes = Math.sqrt(
+            Math.pow(x, 2) + Math.pow(z, 2) + Math.pow(y, 2)
+          );
 
-          {/*
+          {
+            /*
            combine results 
-          */}
+          */
+          }
           accResults = accResults.concat(avgRes);
         }
 
+        if (accResults.length === 3) {
+          for (i = 0; i < accResults.length; i++) {
+            momentum.push(Math.abs(accResults[i] * 0.5 - 0.5) * 3.6);
+          }
 
-        if( accResults.length === 3){
-          for (i = 0; i < accResults.length; i++){
-
-              momentum.push(Math.abs(accResults[i] * 0.50 - 0.50) * 3.6) ;
-
-          }     
-
-          for (i = 0 ; i < momentum.length; i++){
+          for (i = 0; i < momentum.length; i++) {
             if (i === 0) {
               aX = momentum[i];
-            }
-            else if (i === 1) {
+            } else if (i === 1) {
               bY = momentum[i];
-            }
-            else if (i === 2) {
+            } else if (i === 2) {
               cZ = momentum[i];
             }
           }
 
-          {/* Calculating users speed */}
+          {
+            /* Calculating users speed */
+          }
           const momentumUser = (aX + bY + cZ) / 3;
 
-          if ( momentumUser < 0.47 ){
+          if (momentumUser < 0.47) {
             this.setState({
-              stateOfUser: {runOrWalk: 'Walking'},
-              clrs: {clrWalk: '#c9feff'},
+              stateOfUser: { runOrWalk: "Walking" },
+              clrs: { clrWalk: "#c9feff" }
             });
-
-          } else if ( momentumUser > 0.47 ){
+          } else if (momentumUser > 0.47) {
             this.setState({
-              stateOfUser: {runOrWalk: 'Running'},
-              clrs: {clrRun: '#98fb98'},
+              stateOfUser: { runOrWalk: "Running" },
+              clrs: { clrRun: "#98fb98" }
             });
           }
         }
 
-        {/* 
+        {
+          /* 
           saving data accelerometer data to state
-        */}
+        */
+        }
         this.setState({
           magnitude: this.state.magnitude.slice(1),
           accelerometerData: accelerometerData,
           avgAcc: accResults
         });
-
       } else if (length < 3) {
         this.setState({
           accelerometerData: accelerometerData,
-          magnitude: this.state.magnitude.concat(
-              [accelerometerData]
-          )
+          magnitude: this.state.magnitude.concat([accelerometerData])
         });
       }
     });
@@ -147,40 +149,71 @@ class Measurer extends React.Component {
     let { x, y, z } = this.state.accelerometerData;
 
     return (
-      <View style={{flex: 1, margin: 20, margin: 10, textAlign: 'center', fontSize: 20, paddingTop: 70,
-          backgroundColor: this.state.clrs.clrRun || this.state.clrs.clrWalk }}>
+      <View
+        style={{
+          flex: 1,
+          margin: 20,
+          margin: 10,
+          textAlign: "center",
+          fontSize: 20,
+          paddingTop: 70,
+          backgroundColor: this.state.clrs.clrRun || this.state.clrs.clrWalk
+        }}
+      >
         <View>
           <Modal
-              style={styles.modal}
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-              }}>
+            style={styles.modal}
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
             <View style={styles.btnContainer}>
-              <Button type="outline" title="Toggle Sensor" style={styles.snsrBtn} onPress={this._toggle}/>
-              <Button type="outline" title="Fast Mode" style={styles.fstBtn} onPress={this._fast} />
-              <Button type="outline" title="Slow Mode" style={styles.slwBtn} onPress={this._slow} />
+              <Button
+                type="outline"
+                title="Toggle Sensor"
+                style={styles.snsrBtn}
+                onPress={this._toggle}
+              />
+              <Button
+                type="outline"
+                title="Fast Mode"
+                style={styles.fstBtn}
+                onPress={this._fast}
+              />
+              <Button
+                type="outline"
+                title="Slow Mode"
+                style={styles.slwBtn}
+                onPress={this._slow}
+              />
             </View>
             <Button
-                title="Close Modal"
-                type="outline"
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}/>
+              title="Close Modal"
+              type="outline"
+              onPress={() => {
+                this.setModalVisible(!this.state.modalVisible);
+              }}
+            />
           </Modal>
-            <View style={styles.runContainer}>
+          <View style={styles.runContainer}>
             <Text style={styles.momentumText}>{runOrWalk}</Text>
           </View>
           <View style={styles.sensorContainer}>
-            <Text style={styles.sensorText}>x: {round(x)} y: {round(y)} z: {round(z)}</Text>
+            <Text style={styles.sensorText}>
+              x: {round(x)} y: {round(y)} z: {round(z)}
+            </Text>
           </View>
-          <Button title="Options"
-                  type="outline"
-                  style={{paddingTop: 50}}
-                  onPress={() => {this.setModalVisible(!this.state.modalVisible);}
-                  }/>
+          <Button
+            title="Options"
+            type="outline"
+            style={{ paddingTop: 50 }}
+            onPress={() => {
+              this.setModalVisible(!this.state.modalVisible);
+            }}
+          />
         </View>
       </View>
     );
@@ -199,32 +232,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 20,
-    backgroundColor: 'orange',
+    backgroundColor: "orange",
     margin: 10,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
-    paddingTop: 70,
+    paddingTop: 70
   },
   snsrBtn: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 5
   },
   fstBtn: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
     padding: 10,
     borderRadius: 5
   },
   slwBtn: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
     padding: 10,
     borderRadius: 5
   },
   sensorContainer: {
-    alignItems:'center',
+    alignItems: "center",
     padding: 10
   },
   sensorText: {
@@ -232,19 +265,19 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 10
   },
   runContainer: {
-    alignItems:'center'
+    alignItems: "center"
   },
   momentumText: {
     fontSize: 70,
-    fontFamily: 'monospace',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontFamily: "monospace",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 25
   }
 });
 
-export default Measurer
+export default Measurer;
